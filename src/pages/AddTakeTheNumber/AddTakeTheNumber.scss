@@ -1,0 +1,28 @@
+.add-ttnumber {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &__content {
+        width: 90%;
+        height: 80%;
+        border-radius: 20px;
+        background-color: #fff;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        h3 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #ff7506;
+        }
+        p {
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        button {
+            margin: 0 10px;
+        }
+    }
+}

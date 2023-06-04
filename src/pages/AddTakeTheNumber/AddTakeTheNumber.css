@@ -1,0 +1,28 @@
+.add-ttnumber {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-ttnumber__content {
+  width: 90%;
+  height: 80%;
+  border-radius: 20px;
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-ttnumber__content h3 {
+  font-size: 25px;
+  font-weight: 700;
+  color: #ff7506;
+}
+.add-ttnumber__content p {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.add-ttnumber__content button {
+  margin: 0 10px;
+}/*# sourceMappingURL=AddTakeTheNumber.css.map */

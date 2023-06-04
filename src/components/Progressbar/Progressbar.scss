@@ -1,0 +1,20 @@
+.progress-active {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+    gap: 10px;
+    h3 {
+        font-weight: 700;
+        color: #ff7506;
+    }
+}
+.progress-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #535261;
+    margin-left: 10px;
+    width: fit-content;
+}
+.progress-icon {
+    margin-left: 10px;
+}

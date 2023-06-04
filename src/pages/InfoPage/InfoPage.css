@@ -1,0 +1,12 @@
+.info-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.info-page__content {
+  padding: 30px;
+  border-radius: 20px;
+  background-color: #fff;
+  width: 90%;
+}/*# sourceMappingURL=InfoPage.css.map */

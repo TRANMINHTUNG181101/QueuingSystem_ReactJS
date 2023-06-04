@@ -1,0 +1,39 @@
+.custom-statistic {
+    display: flex;
+    align-items: center;
+}
+
+.custom-statistic-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.custom-statistic-content {
+    flex-grow: 1;
+}
+
+.custom-statistic-values {
+    display: flex;
+    align-items: baseline;
+}
+
+.custom-statistic-large-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.custom-statistic-small-value {
+    font-size: 14px;
+}
+
+.custom-statistic-small-value.increasing {
+    color: green;
+}
+
+.custom-statistic-small-value.decreasing {
+    color: red;
+}
+.ant-card-body {
+    padding: 10px 24px 24px 24px !important;
+}
