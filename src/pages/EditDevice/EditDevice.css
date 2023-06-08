@@ -1,0 +1,28 @@
+.edit-device-page {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.edit-device-page__content {
+  padding: 40px;
+  border-radius: 10px;
+  width: 90%;
+  background-color: #fff;
+}
+.edit-device-page__content h3 {
+  font-weight: 700;
+  font-size: 25px;
+  color: #ff7506;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.edit-device-page__content .group-btn {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}/*# sourceMappingURL=EditDevice.css.map */

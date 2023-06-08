@@ -25,4 +25,26 @@
 }
 .add-ttnumber__content button {
   margin: 0 10px;
+}
+
+.time {
+  padding: 40px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.time_in,
+.time_out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.ant-modal .ant-modal-content {
+  background-image: linear-gradient(to top, #ff9138 35%, #fff 30%);
 }/*# sourceMappingURL=AddTakeTheNumber.css.map */

@@ -15,6 +15,13 @@ import InfoPage from "../InfoPage/InfoPage";
 import AddDevicePage from "../AddDevicePage/AddDevicePage";
 import AddSevicePage from "../AddSevicePage/AddSevicePage";
 import AddTakeTheNumber from "../AddTakeTheNumber/AddTakeTheNumber";
+import AddRole from "../AddRole/AddRole";
+import AddAccount from "../AddAccount/AddAccount";
+import DeviceDetails from "../DeviceDetails/DeviceDetails";
+import EditDevice from "../EditDevice/EditDevice";
+import ServiceDetails from "../ServiceDetails/ServiceDetails";
+import TakeTheNumberDetails from "../TakeTheNumberDetails/TakeTheNumberDetails";
+import EditService from "../EditService/EditService";
 function Dashboard() {
   const location = useLocation();
   const isPaddedRoute =
@@ -43,6 +50,16 @@ function Dashboard() {
         <Route path="/add-device" element={<AddDevicePage />} />
         <Route path="/add-service" element={<AddSevicePage />} />
         <Route path="/add-take-the-number" element={<AddTakeTheNumber />} />
+        <Route path="/add-role" element={<AddRole />} />
+        <Route path="/add-account" element={<AddAccount />} />
+        <Route path="/device-details" element={<DeviceDetails />} />
+        <Route path="/edit-device" element={<EditDevice />} />
+        <Route path="/service-details" element={<ServiceDetails />} />
+        <Route
+          path="/take-the-number-details"
+          element={<TakeTheNumberDetails />}
+        />
+        <Route path="/edit-service" element={<EditService />} />
       </Routes>
     </Layout>
   );

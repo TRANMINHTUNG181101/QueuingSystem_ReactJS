@@ -84,95 +84,101 @@ function DashboardContent() {
     <Layout>
       <Layout>
         <Content className="dashboard-content">
-          <div className="top-section">
-            <h1 className="title">Biểu đồ cấp số</h1>
-            <Row gutter={[16, 16]}>
-              <Col span={6}>
-                <Card>
-                  <CustomStatistic
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
+          <Row gutter={20}>
+            <Col span={17}>
+              <div className="top-section">
+                <h1 className="title">Biểu đồ cấp số</h1>
+                <Row gutter={[16, 16]}>
+                  <Col span={6}>
+                    <Card>
+                      <CustomStatistic
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={6}>
+                    <Card>
+                      <CustomStatistic
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={6}>
+                    <Card>
+                      <CustomStatistic
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={6}>
+                    <Card>
+                      <CustomStatistic
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+                <div className="chart-section">
+                  <Line
+                    options={options as ChartOptions<"line">}
+                    data={data as ChartData<"line">}
                   />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card>
-                  <CustomStatistic
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card>
-                  <CustomStatistic
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card>
-                  <CustomStatistic
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-            </Row>
-            <div className="chart-section">
-              <Line
-                options={options as ChartOptions<"line">}
-                data={data as ChartData<"line">}
-              />
-            </div>
-          </div>
-          <div className="bottom-section">
-            <h1 className="title">Biểu đồ cấp số</h1>
-            <Row gutter={[16, 16]}>
-              <Col span={24}>
-                <Card>
-                  <Progressbar
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-              <Col span={24}>
-                <Card>
-                  <Progressbar
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-              <Col span={24}>
-                <Card>
-                  <Progressbar
-                    title="Số thứ tự đã sử dụng"
-                    value={50}
-                    smallValue="+10"
-                    isIncreasing={true}
-                  />
-                </Card>
-              </Col>
-            </Row>
-            <div className="calendar-section">
-              <Calendar value={date} />
-            </div>
-          </div>
+                </div>
+              </div>
+            </Col>
+            <Col span={7}>
+              <div className="bottom-section">
+                <h1 className="title">Biểu đồ cấp số</h1>
+                <Row gutter={[16, 16]}>
+                  <Col span={24}>
+                    <Card>
+                      <Progressbar
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={24}>
+                    <Card>
+                      <Progressbar
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={24}>
+                    <Card>
+                      <Progressbar
+                        title="Số thứ tự đã sử dụng"
+                        value={50}
+                        smallValue="+10"
+                        isIncreasing={true}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+                <div className="calendar-section">
+                  <Calendar value={date} />
+                </div>
+              </div>
+            </Col>
+          </Row>
         </Content>
       </Layout>
     </Layout>

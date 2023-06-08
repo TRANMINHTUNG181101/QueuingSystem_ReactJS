@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Input, Select, Table, Button } from "antd";
+import { Layout, DatePicker, Select, Table, Button } from "antd";
 import "./ReportPage.css";
 import { DownloadOutlined } from "@ant-design/icons";
 
@@ -121,37 +121,15 @@ function ReportPage() {
             }}
           >
             <span>Trạng thái hoạt động:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="active">Hoạt động</Option>
-              <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
+            <DatePicker />
           </div>
           <div
             style={{
               marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
+              marginTop: "25px",
             }}
           >
-            <span>Trạng thái kết nối:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Từ khóa:</span>
-            <Input style={{ width: "200px" }} />
+            <DatePicker />
           </div>
         </div>
         <Table

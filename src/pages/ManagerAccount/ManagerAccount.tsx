@@ -1,6 +1,9 @@
 import React from "react";
-import { Layout, Input, Select, Table } from "antd";
+import { Layout, Input, Select, Table, Button } from "antd";
 import "./ManagerAccount.css";
+import { PlusOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -98,25 +101,10 @@ function ManagerAccount() {
               gap: "10px",
             }}
           >
-            <span>Trạng thái hoạt động:</span>
+            <span>Tên vai trò:</span>
             <Select style={{ width: "200px" }}>
               <Option value="active">Hoạt động</Option>
               <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Trạng thái kết nối:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
             </Select>
           </div>
           <div
@@ -129,7 +117,14 @@ function ManagerAccount() {
             }}
           >
             <span>Từ khóa:</span>
-            <Input style={{ width: "200px" }} />
+            <Input
+              style={{ width: "200px" }}
+              prefix={
+                <SearchOutlined
+                  style={{ color: "#FF7506", marginLeft: "auto" }}
+                />
+              }
+            />
           </div>
         </div>
         <Table
@@ -139,6 +134,44 @@ function ManagerAccount() {
           style={{ width: "100%" }}
           pagination={pagination}
         />
+        <Button
+          icon={
+            <PlusOutlined
+              style={{
+                width: "30px",
+                height: "30px",
+                backgroundColor: "#FF9138",
+                color: "#FFF2E7",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "5px",
+                marginLeft: "10px",
+              }}
+            />
+          }
+          style={{
+            position: "absolute",
+            right: "0px",
+            top: "26%",
+            width: "60px",
+            height: "80px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#FFF2E7 !important",
+          }}
+        >
+          <span
+            style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}
+          >
+            <Link to="/dashboard/add-account">
+              Thêm
+              <br /> tài khoản
+            </Link>
+          </span>
+        </Button>
       </Content>
     </Layout>
   );

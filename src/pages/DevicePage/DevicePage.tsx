@@ -5,6 +5,7 @@ import { Table, Tag } from "antd";
 import { Select, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -43,13 +44,13 @@ const columns = [
     title: " ",
     dataIndex: "detail",
     key: "detail",
-    render: () => <a href="#">Chi tiết</a>,
+    render: () => <Link to="/dashboard/device-details">Chi tiết</Link>,
   },
   {
     title: " ",
     dataIndex: "update",
     key: "update",
-    render: () => <a href="#">Cập nhật</a>,
+    render: () => <Link to="/dashboard/edit-device">Cập nhật</Link>,
   },
 ];
 
@@ -203,7 +204,14 @@ function DevicePage() {
             }}
           >
             <span>Từ khóa:</span>
-            <Input style={{ width: "200px" }} />
+            <Input
+              style={{ width: "200px" }}
+              prefix={
+                <SearchOutlined
+                  style={{ color: "#FF7506", marginLeft: "auto" }}
+                />
+              }
+            />
           </div>
         </div>
         <Table

@@ -13,6 +13,8 @@ import InfoPage from "./pages/InfoPage/InfoPage";
 import AddDevicePage from "./pages/AddDevicePage/AddDevicePage";
 import AddSevicePage from "./pages/AddSevicePage/AddSevicePage";
 import AddTakeTheNumber from "./pages/AddTakeTheNumber/AddTakeTheNumber";
+import AddRole from "./pages/AddRole/AddRole";
+import AddAccount from "./pages/AddAccount/AddAccount";
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Route path="add-device" element={<AddDevicePage />} />
           <Route path="add-service" element={<AddSevicePage />} />
           <Route path="add-take-the-number" element={<AddTakeTheNumber />} />
+          <Route path="add-role" element={<AddRole />} />
+          <Route path="add-account" element={<AddAccount />} />
         </Route>
       </Routes>
     </div>

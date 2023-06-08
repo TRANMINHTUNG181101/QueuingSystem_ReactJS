@@ -53,7 +53,7 @@ function HeaderComponent() {
           </Breadcrumb.Item>
         ))}
       </Breadcrumb>
-      <Dropdown overlay={menu} trigger={["click"]}>
+      <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
         <Badge count={notificationData.length}>
           <BellOutlined className="bell" />
         </Badge>

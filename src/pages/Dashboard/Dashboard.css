@@ -86,10 +86,6 @@
   font-size: 20px;
 }
 
-.bottom-section {
-  width: 900px;
-}
-
 .react-calendar__tile--now {
   background-color: #ff7506 !important;
   color: #fff !important;

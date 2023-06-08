@@ -1,7 +1,8 @@
-import { Layout, Input, Select, Table, Button } from "antd";
+import { Layout, Input, Select, Table, Button, DatePicker } from "antd";
 import "./TakeTheNumberPage.css";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -46,7 +47,7 @@ const columns = [
     title: " ",
     dataIndex: "detail",
     key: "detail",
-    render: () => <a href="#">Chi tiết</a>,
+    render: () => <Link to="/dashboard/take-the-number-details">Chi tiết</Link>,
   },
 ];
 
@@ -118,7 +119,7 @@ function TakeTheNumberPage() {
               gap: "10px",
             }}
           >
-            <span>Trạng thái hoạt động:</span>
+            <span>Tên dịch vụ</span>
             <Select style={{ width: "200px" }}>
               <Option value="active">Hoạt động</Option>
               <Option value="inactive">Ngừng hoạt động</Option>
@@ -133,11 +134,46 @@ function TakeTheNumberPage() {
               gap: "10px",
             }}
           >
-            <span>Trạng thái kết nối:</span>
+            <span>Tình trạng</span>
             <Select style={{ width: "200px" }}>
               <Option value="connected">Đã kết nối</Option>
               <Option value="disconnected">Chưa kết nối</Option>
             </Select>
+          </div>
+          <div
+            style={{
+              marginRight: "16px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "10px",
+            }}
+          >
+            <span>Nguồn cấp</span>
+            <Select style={{ width: "200px" }}>
+              <Option value="connected">Đã kết nối</Option>
+              <Option value="disconnected">Chưa kết nối</Option>
+            </Select>
+          </div>
+          <div
+            style={{
+              marginRight: "16px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "10px",
+            }}
+          >
+            <span>Chọn thời gian</span>
+            <DatePicker />
+          </div>
+          <div
+            style={{
+              marginRight: "16px",
+              marginTop: "25px",
+            }}
+          >
+            <DatePicker />
           </div>
           <div
             style={{
@@ -149,7 +185,14 @@ function TakeTheNumberPage() {
             }}
           >
             <span>Từ khóa:</span>
-            <Input style={{ width: "200px" }} />
+            <Input
+              style={{ width: "200px" }}
+              prefix={
+                <SearchOutlined
+                  style={{ color: "#FF7506", marginLeft: "auto" }}
+                />
+              }
+            />
           </div>
         </div>
         <Table

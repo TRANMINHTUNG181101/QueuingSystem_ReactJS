@@ -1,6 +1,7 @@
 import React from "react";
-import { Layout, Input, Select, Table } from "antd";
+import { Layout, Input, Select, Table, DatePicker } from "antd";
 import "./ManagerHistory.css";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -97,25 +98,15 @@ function ManagerHistory() {
             }}
           >
             <span>Trạng thái hoạt động:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="active">Hoạt động</Option>
-              <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
+            <DatePicker />
           </div>
           <div
             style={{
               marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
+              marginTop: "25px",
             }}
           >
-            <span>Trạng thái kết nối:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
-            </Select>
+            <DatePicker />
           </div>
           <div
             style={{
@@ -127,7 +118,14 @@ function ManagerHistory() {
             }}
           >
             <span>Từ khóa:</span>
-            <Input style={{ width: "200px" }} />
+            <Input
+              style={{ width: "200px" }}
+              prefix={
+                <SearchOutlined
+                  style={{ color: "#FF7506", marginLeft: "auto" }}
+                />
+              }
+            />
           </div>
         </div>
         <Table

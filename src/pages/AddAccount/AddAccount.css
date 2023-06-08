@@ -1,0 +1,43 @@
+.add-account {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.add-account h3 {
+  text-align: left;
+  margin-bottom: 30px;
+  color: #ff7506;
+  font-weight: 700;
+  font-size: 25px;
+  margin-right: auto;
+  margin-left: 70px;
+}
+.add-account__content {
+  width: 90%;
+  height: 65%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+}
+.add-account__content form {
+  background-color: #fff;
+}
+.add-account__content form h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7506;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.group-btn {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}/*# sourceMappingURL=AddAccount.css.map */
