@@ -63,7 +63,7 @@ function HeaderComponent() {
         <span>Xin chào</span>
         <span className="username">
           <Link to="/dashboard/info" style={{ color: "#000000" }}>
-            Trần Minh Tùng
+            Lê Quỳnh Ái Vân
           </Link>
         </span>
       </div>

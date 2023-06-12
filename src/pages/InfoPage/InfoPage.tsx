@@ -22,7 +22,7 @@ function InfoPage() {
               htmlFor="avatar"
               style={{ fontSize: "20px", fontWeight: "700" }}
             >
-              Trần Minh Tùng
+              Lê Quỳnh Bảo Vân
             </label>
           </Col>
           <Col
@@ -37,7 +37,7 @@ function InfoPage() {
             <label htmlFor="username" style={{ textAlign: "left" }}>
               Tên người dùng
             </label>
-            <Input id="username" value="Trần Minh Tùng" disabled />
+            <Input id="username" value="Lê Quỳnh Ái Vân" disabled />
             <label htmlFor="phone" style={{ textAlign: "left" }}>
               Số điện thoại
             </label>
