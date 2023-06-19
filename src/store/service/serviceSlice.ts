@@ -4,13 +4,13 @@ import { ServiceInterface } from "../../interfaces/serviceInterface";
 interface ServiceState {
   isSending: boolean;
   error: string | null;
-  numbers: ServiceInterface[];
+  services: ServiceInterface[];
 }
 
 const initialState: ServiceState = {
   isSending: false,
   error: null,
-  numbers: [],
+  services: [],
 };
 
 const serviceSlice = createSlice({
@@ -46,12 +46,12 @@ const serviceSlice = createSlice({
     getServiceStart(state) {
       state.isSending = true;
       state.error = null;
-      state.numbers = [];
+      state.services = [];
     },
     getServiceSuccess(state, action: PayloadAction<ServiceInterface[]>) {
       state.isSending = false;
       state.error = null;
-      state.numbers = action.payload;
+      state.services = action.payload;
     },
     getServiceFailure(state, action: PayloadAction<string>) {
       state.isSending = false;

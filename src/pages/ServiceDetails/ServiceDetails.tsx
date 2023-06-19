@@ -1,34 +1,92 @@
 import { Col, Input, Layout, Row, Select, DatePicker, Table } from "antd";
 import "./ServiceDetails.css";
 import { SearchOutlined } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
+import { ServiceInterface } from "../../interfaces/serviceInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { useEffect, useState } from "react";
+import { NumberingInterface } from "../../interfaces/numberInterface";
+import { useDispatch } from "react-redux";
+import { fetchNumberThunk } from "../../store/number/numberThunks";
+import { AnyAction } from "redux";
 
 const { Option } = Select;
 
 function ServiceDetails() {
-  const dataSource = [
-    { id: 1, status: "Đã xong" },
-    { id: 2, status: "Đang xử lý" },
-    { id: 3, status: "Chưa bắt đầu" },
-    { id: 4, status: "Đã xong" },
-    { id: 5, status: "Chưa bắt đầu" },
-    { id: 6, status: "Đang xử lý" },
-  ];
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { service }: { service: ServiceInterface } = location.state;
+  const numberData = useSelector((state: RootState) => state.number.numbers);
+  const [data, setData] = useState<NumberingInterface[]>([]);
+  const [filterOptions, setFilterOptions] = useState({
+    status: "",
+    source: "",
+    date: null,
+    keyword: "",
+  });
 
+  useEffect(() => {
+    dispatch(fetchNumberThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+
+    const filteredData = numberData.filter(
+      (number) => number.serviceName === service.serviceName
+    );
+    setData(filteredData);
+  }, []);
   const columns = [
     {
       title: "Số thứ tự",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "idNumber",
+      key: "idNumber",
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "state",
+      key: "state",
     },
   ];
   const pagination = {
     pageSize: 5,
   };
+  const handleStatusChange = (value: any) => {
+    setFilterOptions({ ...filterOptions, status: value });
+  };
+
+  const handleSourceChange = (value: any) => {
+    setFilterOptions({ ...filterOptions, source: value });
+  };
+
+  const handleDateChange = (value: any) => {
+    setFilterOptions({ ...filterOptions, date: value });
+  };
+
+  const handleKeywordChange = (e: any) => {
+    const keyword = e.target.value;
+    setFilterOptions({ ...filterOptions, keyword });
+  };
+  useEffect(() => {
+    const filteredData = numberData.filter((number) => {
+      const matchesStatus =
+        !filterOptions.status || number.state === filterOptions.status;
+      const matchesSource =
+        !filterOptions.source || number.source === filterOptions.source;
+      const matchesDate =
+        !filterOptions.date || number.issuanceDate === filterOptions.date;
+      const matchesKeyword =
+        !filterOptions.keyword ||
+        number.idNumber.includes(filterOptions.keyword);
+      return matchesStatus && matchesSource && matchesDate && matchesKeyword;
+    });
+    setData(filteredData);
+  }, [filterOptions, numberData]);
+
   return (
     <div className="service-details">
       <div className="service-details__content">
@@ -50,26 +108,42 @@ function ServiceDetails() {
               <h3>Thông tin dịch vụ</h3>
               <div className="device__info">
                 <h3>Mã dịch vụ:</h3>
-                <span>201</span>
+                <span>{service.serviceCode}</span>
               </div>
               <div className="device__info">
                 <h3>Tên dịch vụ:</h3>
-                <span>Khám tim mạch</span>
+                <span>{service.serviceName}</span>
               </div>
               <div className="device__info">
                 <h3>Mô tả:</h3>
-                <span>Chuyên các bệnh lý về tim</span>
+                <span>{service.description}</span>
               </div>
               <h3 style={{ marginTop: "20px" }}>Quy tắc cấp số</h3>
               <div className="device__info">
                 <h3>Tăng tự động</h3>
-                <Input style={{ width: "50px" }} />
+                <Input
+                  style={{ width: "55px" }}
+                  value={service?.autoIncreaseFrom ?? undefined}
+                />
                 <span>đến</span>
-                <Input style={{ width: "50px" }} />
+                <Input
+                  style={{ width: "55px" }}
+                  value={service?.autoIncreaseTo ?? undefined}
+                />
               </div>
               <div className="device__info">
                 <h3>Prefix:</h3>
-                <Input style={{ width: "50px" }} />
+                <Input
+                  style={{ width: "55px" }}
+                  value={service.prefix !== null ? service.prefix : undefined}
+                />
+              </div>
+              <div className="device__info">
+                <h3>Suffix:</h3>
+                <Input
+                  style={{ width: "55px" }}
+                  value={service.suffix !== null ? service.suffix : undefined}
+                />
               </div>
               <div className="device__info">
                 <h3>Reset mỗi ngày</h3>
@@ -101,9 +175,13 @@ function ServiceDetails() {
                   }}
                 >
                   <span>Tình trạng</span>
-                  <Select style={{ width: "100px" }}>
-                    <Option value="connected">Đã kết nối</Option>
-                    <Option value="disconnected">Chưa kết nối</Option>
+                  <Select
+                    style={{ width: "100px" }}
+                    onChange={handleStatusChange}
+                  >
+                    <Option value="Đã sử dụng">Đã sử dụng</Option>
+                    <Option value="Đang chờ">Đang chờ</Option>
+                    <Option value="Bỏ qua">Bỏ qua</Option>
                   </Select>
                 </div>
                 <div
@@ -116,9 +194,12 @@ function ServiceDetails() {
                   }}
                 >
                   <span>Nguồn cấp</span>
-                  <Select style={{ width: "100px" }}>
-                    <Option value="connected">Đã kết nối</Option>
-                    <Option value="disconnected">Chưa kết nối</Option>
+                  <Select
+                    style={{ width: "100px" }}
+                    onChange={handleSourceChange}
+                  >
+                    <Option value="Kiosk">Kiosk</Option>
+                    <Option value="Display counter">Display counter</Option>
                   </Select>
                 </div>
                 <div
@@ -159,11 +240,12 @@ function ServiceDetails() {
                         style={{ color: "#FF7506", marginLeft: "auto" }}
                       />
                     }
+                    onChange={handleKeywordChange}
                   />
                 </div>
               </div>
               <Table
-                dataSource={dataSource}
+                dataSource={data}
                 columns={columns}
                 pagination={pagination}
               />

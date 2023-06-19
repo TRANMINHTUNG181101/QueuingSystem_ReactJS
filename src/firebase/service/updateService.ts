@@ -1,16 +1,49 @@
 import { database } from "../index";
-import { ref, onValue, update } from "firebase/database";
+import {
+  ref,
+  onValue,
+  update,
+  query,
+  orderByChild,
+  equalTo,
+} from "firebase/database";
 import { ServiceInterface } from "../../interfaces/serviceInterface";
 
-export const updateService = (serviceId: string, newData: Partial<ServiceInterface>): Promise<void> => {
+export const updateService = (
+  fieldName: string,
+  fieldValue: string,
+  newData: Partial<ServiceInterface>
+): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const serviceRef = ref(database, `service/${serviceId}`);
-    update(serviceRef, newData)
-      .then(() => {
-        resolve();
-      })
-      .catch((error) => {
-        reject(error);
-      });
+    const servicesRef = ref(database, "service");
+    console.log(newData);
+    const fieldQuery = query(
+      servicesRef,
+      orderByChild(fieldName),
+      equalTo(fieldValue)
+    );
+    onValue(fieldQuery, (snapshot) => {
+      if (snapshot.exists()) {
+        const services = snapshot.val();
+        const updates: { [key: string]: Partial<ServiceInterface> } = {};
+
+        Object.keys(services).forEach((serviceCode) => {
+          updates[`service/${serviceCode}`] = {
+            ...services[serviceCode],
+            ...newData,
+          };
+        });
+
+        update(ref(database), updates)
+          .then(() => {
+            resolve();
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        reject(new Error("Không tìm thấy mục thỏa mãn điều kiện."));
+      }
+    });
   });
 };

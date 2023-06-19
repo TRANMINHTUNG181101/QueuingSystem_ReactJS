@@ -5,5 +5,7 @@ export interface DeviceInterface {
   username: string;
   ipAddress: string;
   password: string;
-  service: string;
+  stateActive: string;
+  stateConnect: string;
+  services: string[];
 }

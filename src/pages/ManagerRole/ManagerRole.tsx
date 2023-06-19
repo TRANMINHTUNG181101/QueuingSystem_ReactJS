@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Input, Select, Table, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./ManagerRole.css";
 import { SearchOutlined } from "@ant-design/icons";
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRoleThunk } from "../../store/role/roleThunks";
+import { useEffect } from "react";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import { RoleInterface } from "../../interfaces/roleInterface";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -32,22 +39,11 @@ const columns = [
     dataIndex: "update",
     key: "update",
     sorter: false,
-    render: () => "Cập nhật",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    roleName: "Vai trò 1",
-    userCount: 10,
-    description: "Mô tả vai trò 1",
-  },
-  {
-    key: "2",
-    roleName: "Vai trò 2",
-    userCount: 5,
-    description: "Mô tả vai trò 2",
+    render: (text: any, record: any) => (
+      <Link to="/dashboard/manager-role/edit-role" state={{ role: record }}>
+        Cập nhật
+      </Link>
+    ),
   },
 ];
 
@@ -56,6 +52,50 @@ const pagination = {
 };
 
 function ManagerRole() {
+  const dispatch = useDispatch();
+  const roleData = useSelector((state: RootState) => state.role.roles);
+  const accountData = useSelector((state: RootState) => state.account.accounts);
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filteredData, setFilteredData] = useState<RoleInterface[]>([]);
+
+  const transformedRoleData: any = roleData.map((role, index) => {
+    const matchingAccounts = accountData.filter((account) =>
+      account.role.includes(role.roleName)
+    );
+    const matchingAccountCount = matchingAccounts.length;
+    return {
+      roleName: role.roleName,
+      userCount: matchingAccountCount,
+      description: role.description,
+    };
+  });
+
+  useEffect(() => {
+    dispatch(fetchRoleThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+
+  useEffect(() => {
+    const filteredRoles = roleData.filter((role) => {
+      return (
+        role.roleName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        role.description.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    });
+
+    setFilteredData(filteredRoles);
+  }, [roleData, searchKeyword]);
+
+  const handleSearch = (value: any) => {
+    setSearchKeyword(value);
+  };
+
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
@@ -84,12 +124,13 @@ function ManagerRole() {
                   style={{ color: "#FF7506", marginLeft: "auto" }}
                 />
               }
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
         </div>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={transformedRoleData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}
@@ -126,7 +167,10 @@ function ManagerRole() {
           <span
             style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}
           >
-            <Link to="/dashboard/add-role">
+            <Link
+              to="/dashboard/manager-role/add-role"
+              style={{ color: "#FF7506" }}
+            >
               Thêm
               <br /> vai trò
             </Link>

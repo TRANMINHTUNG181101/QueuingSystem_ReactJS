@@ -2,8 +2,13 @@ import { Col, Button, Layout, Row } from "antd";
 import "./DeviceDetails.css";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { DeviceInterface } from "../../interfaces/deviceInterface";
 
 function DeviceDetails() {
+  const location = useLocation();
+  const { device }: { device: DeviceInterface } = location.state;
+
   return (
     <div className="device-details">
       <div className="device-details__content">
@@ -16,15 +21,15 @@ function DeviceDetails() {
             >
               <div className="device__info">
                 <h3>Mã thiết bị:</h3>
-                <span>KIO_01</span>
+                <span>{device.deviceId}</span>
               </div>
               <div className="device__info">
                 <h3>Tên thiết bị:</h3>
-                <span>Kiosk</span>
+                <span>{device.deviceName}</span>
               </div>
               <div className="device__info">
                 <h3>Địa chỉ IP:</h3>
-                <span>128.172.308</span>
+                <span>{device.ipAddress}</span>
               </div>
             </Col>
             <Col
@@ -33,15 +38,15 @@ function DeviceDetails() {
             >
               <div className="device__info">
                 <h3>Loại thiết bị:</h3>
-                <span>Kiosk</span>
+                <span>{device.deviceType}</span>
               </div>
               <div className="device__info">
                 <h3>Tên đăng nhập:</h3>
-                <span>Linhkyo011</span>
+                <span>{device.username}</span>
               </div>
               <div className="device__info">
                 <h3>Mật khẩu:</h3>
-                <span>1CMS</span>
+                <span>{device.password}</span>
               </div>
             </Col>
             <Col span={24} style={{ marginTop: "30px" }}>
@@ -55,10 +60,7 @@ function DeviceDetails() {
                 }}
               >
                 <h3>Dịch vụ sử dụng:</h3>
-                <span>
-                  Khám tim mạch, Khám sản - Phụ khoa, Khám răng hàm mặt, Khám
-                  tai mũi họng, Khám hô hấp, Khám tổng quát.
-                </span>
+                <span>{device.services}</span>
               </div>
             </Col>
           </Row>

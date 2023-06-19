@@ -1,0 +1,24 @@
+.chart-section {
+    canvas {
+        width: 100% !important;
+    }
+}
+.chart-section__filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__title {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        h3 {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        span {
+            color: gray;
+            text-align: left;
+        }
+    }
+}

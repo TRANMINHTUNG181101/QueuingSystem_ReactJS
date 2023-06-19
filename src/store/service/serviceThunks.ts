@@ -16,27 +16,27 @@ import {
 } from "./serviceSlice";
 import { Action } from "redux";
 
-export const creatService =
+export const sendService =
   (
-    serviceId: string,
-    serviceName: string,
+    autoIncreaseFrom: string | null,
+    autoIncreaseTo: string | null,
     description: string,
-    numberingRule: "Increase" | "Decrease" | "Prefix",
-    prefix?: string,
-    startNumber?: number,
-    endNumber?: number
+    prefix: string | null,
+    serviceCode: string,
+    serviceName: string,
+    suffix: string | null
   ): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch: any) => {
     try {
       dispatch(sendServiceStart());
       await createService({
-        serviceId,
-        serviceName,
+        autoIncreaseFrom,
+        autoIncreaseTo,
         description,
-        numberingRule,
         prefix,
-        startNumber,
-        endNumber,
+        serviceCode,
+        serviceName,
+        suffix,
       });
       dispatch(sendServiceSuccess());
     } catch (error) {
@@ -46,24 +46,25 @@ export const creatService =
 
 export const updateServiceThunk =
   (
-    serviceId: string,
-    serviceName: string,
+    autoIncreaseFrom: string | null,
+    autoIncreaseTo: string | null,
     description: string,
-    numberingRule: "Increase" | "Decrease" | "Prefix",
-    prefix?: string,
-    startNumber?: number,
-    endNumber?: number
+    prefix: string | null,
+    serviceCode: string,
+    serviceName: string,
+    suffix: string | null
   ): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch: any) => {
     try {
       dispatch(updateServiceStart());
-      await updateService(serviceId, {
-        serviceName,
+      await updateService("serviceCode", serviceCode, {
+        autoIncreaseFrom,
+        autoIncreaseTo,
         description,
-        numberingRule,
         prefix,
-        startNumber,
-        endNumber,
+        serviceCode,
+        serviceName,
+        suffix,
       });
       dispatch(updateServiceSuccess());
     } catch (error) {

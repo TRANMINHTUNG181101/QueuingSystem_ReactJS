@@ -1,9 +1,12 @@
 import { Col, Layout, Row, Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./TakeTheNumberDetails.css";
+import { NumberingInterface } from "../../interfaces/numberInterface";
 
 function TakeTheNumberDetails() {
+  const location = useLocation();
+  const { number }: { number: NumberingInterface } = location.state;
   return (
     <div className="take-the-number-details">
       <div className="take-the-number-details__content">
@@ -16,23 +19,23 @@ function TakeTheNumberDetails() {
             >
               <div className="take-the-number__info">
                 <h3>Họ tên:</h3>
-                <span>Nguyễn Thị Dung</span>
+                <span>{number.customerName}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Tên dịch vụ:</h3>
-                <span>Khám tim mạch</span>
+                <span>{number.serviceName}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Số thứ tự:</h3>
-                <span>2001201</span>
+                <span>{number.idNumber}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Thời gian cấp:</h3>
-                <span>14:35 - 07/11/2021</span>
+                <span>{number.issuanceDate}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Hạn sử dụng:</h3>
-                <span>18:00 - 07/11/2021</span>
+                <span>{number.expirationDate}</span>
               </div>
             </Col>
             <Col
@@ -41,19 +44,19 @@ function TakeTheNumberDetails() {
             >
               <div className="take-the-number__info">
                 <h3>Nguồn cấp:</h3>
-                <span>Kiosk</span>
+                <span>{number.source}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Trạng thái:</h3>
-                <span>Đang chờ</span>
+                <span>{number.state}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Số điện thoại:</h3>
-                <span>0948523623</span>
+                <span>{number.phone}</span>
               </div>
               <div className="take-the-number__info">
                 <h3>Địa chỉ Email:</h3>
-                <span>nguyendung@gmail.com</span>
+                <span>{number.email}</span>
               </div>
             </Col>
           </Row>

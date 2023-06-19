@@ -1,0 +1,23 @@
+{
+  "dashboard": "Dashboard",
+  "device": "Danh sách thiết bị",
+  "service": "Danh sách dịch vụ",
+  "take-the-number": "Danh sách cấp số",
+  "report": "Lập báo cáo",
+  "manager-role": "Quản lý vai trò",
+  "manager-account": "Quản lý tài khoản",
+  "manager-history": "Nhật kí hoạt động",
+  "info": "Thông tin",
+  "add-device": "Thêm thiết bị",
+  "add-service": "Thêm dịch vụ",
+  "add-take-the-number": "Thêm lấy số",
+  "add-role": "Thêm vai trò",
+  "add-account": "Thêm tài khoản",
+  "device-details": "Chi tiết thiết bị",
+  "edit-device": "Chỉnh sửa thiết bị",
+  "service-details": "Chi tiết dịch vụ",
+  "take-the-number-details": "Chi tiết lấy số",
+  "edit-service": "Chỉnh sửa dịch vụ",
+  "edit-role": "Chỉnh sửa vai trò",
+  "edit-account": "Chỉnh sửa tài khoản"
+}

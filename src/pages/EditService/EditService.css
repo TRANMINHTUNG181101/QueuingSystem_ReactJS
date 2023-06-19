@@ -4,6 +4,14 @@
   align-items: center;
   justify-content: center;
 }
+.edit-service-page .group-btn {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .edit-service-page__content {
   width: 90%;
   padding: 30px;
@@ -29,13 +37,4 @@
 .check__item h3 {
   width: 200px;
   text-align: left;
-}
-
-.group-btn {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }/*# sourceMappingURL=EditService.css.map */

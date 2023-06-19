@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, DatePicker, Select, Table, Button } from "antd";
 import "./ReportPage.css";
 import { DownloadOutlined } from "@ant-design/icons";
+import { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+import moment, { Moment } from "moment";
+import { CSVLink } from "react-csv";
 
 const { Content } = Layout;
-const { Option } = Select;
 
 interface DataItem {
   key: string;
@@ -52,54 +55,74 @@ const columns = [
   },
 ];
 
-const data: DataItem[] = [
-  {
-    key: "1",
-    stt: 1,
-    customerName: "Khách hàng 1",
-    serviceName: "Dịch vụ 1",
-    startTime: "01/06/2023",
-    expirationDate: "01/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 1",
-  },
-  {
-    key: "2",
-    stt: 2,
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
-  },
-  {
-    key: "3",
-    stt: 3,
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
-  },
-  {
-    key: "4",
-    stt: 4,
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
-  },
-];
-
 const pagination = {
   pageSize: 7,
 };
 
 function ReportPage() {
+  const [startDate, setStartDate] = useState<Moment | null>(null);
+  const [endDate, setEndDate] = useState<Moment | null>(null);
+  const numberData = useSelector((state: RootState) => state.number.numbers);
+  const deviceData = useSelector((state: RootState) => state.device.devices);
+
+  const transformedServiceData: DataItem[] =
+    numberData && deviceData
+      ? numberData
+          .map((number, index) => {
+            const matchingDevice = deviceData.find((device) =>
+              device.services.includes(number.serviceName)
+            );
+            const source = matchingDevice ? matchingDevice.deviceType : "";
+
+            return {
+              stt: 1,
+              key: number.idNumber.toString(),
+              customerName: number.customerName,
+              serviceName: number.serviceName,
+              startTime: number.issuanceDate,
+              expirationDate: number.expirationDate,
+              status: number.state,
+              source: source,
+            };
+          })
+          .filter((item) => {
+            if (startDate && endDate) {
+              const startDateObj = startDate.format("DD-MM-YYYY");
+              const endDateObj = endDate.format("DD-MM-YYYY");
+              const startTime = item.startTime.split(" ")[1];
+
+              const startDateParse = moment(startDateObj, "D/M/YYYY");
+              const endDateParse = moment(endDateObj, "D/M/YYYY");
+              const dateToCheckk = moment(startTime, "D/M/YYYY");
+
+              return dateToCheckk.isBetween(
+                startDateParse,
+                endDateParse,
+                undefined,
+                "[]"
+              );
+            }
+
+            return true;
+          })
+      : [];
+
+  const handleStartDateChange = (date: any) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: any) => {
+    setEndDate(date);
+  };
+
+  const csvData = transformedServiceData.map((item) => ({
+    STT: item.stt,
+    "Tên dịch vụ": item.serviceName,
+    "Thời gian cấp": item.startTime,
+    "Tình trạng": item.status,
+    "Nguồn cấp": item.source,
+  }));
+
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
@@ -121,7 +144,7 @@ function ReportPage() {
             }}
           >
             <span>Trạng thái hoạt động:</span>
-            <DatePicker />
+            <DatePicker onChange={handleStartDateChange} />
           </div>
           <div
             style={{
@@ -129,50 +152,59 @@ function ReportPage() {
               marginTop: "25px",
             }}
           >
-            <DatePicker />
+            <DatePicker onChange={handleEndDateChange} />
           </div>
         </div>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={transformedServiceData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}
         />
       </Content>
-      <Button
-        icon={
-          <DownloadOutlined
-            style={{
-              width: "30px",
-              height: "30px",
-              backgroundColor: "#FF9138",
-              color: "#FFF2E7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "5px",
-              marginLeft: "10px",
-            }}
-          />
-        }
-        style={{
-          position: "absolute",
-          right: "0px",
-          top: "26%",
-          width: "60px",
-          height: "80px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "#FFF2E7 !important",
-        }}
+      <CSVLink
+        data={csvData}
+        filename={"data.csv"}
+        className="csv-download-link"
+        target="_blank"
       >
-        <span style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}>
-          Tải về
-        </span>
-      </Button>
+        <Button
+          icon={
+            <DownloadOutlined
+              style={{
+                width: "30px",
+                height: "30px",
+                backgroundColor: "#FF9138",
+                color: "#FFF2E7",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "5px",
+                marginLeft: "10px",
+              }}
+            />
+          }
+          style={{
+            position: "absolute",
+            right: "0px",
+            top: "26%",
+            width: "60px",
+            height: "80px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#FFF2E7 !important",
+          }}
+        >
+          <span
+            style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}
+          >
+            Tải về
+          </span>
+        </Button>
+      </CSVLink>
     </Layout>
   );
 }

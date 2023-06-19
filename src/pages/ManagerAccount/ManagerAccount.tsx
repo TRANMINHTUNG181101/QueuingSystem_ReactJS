@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Input, Select, Table, Button } from "antd";
 import "./ManagerAccount.css";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAccountsThunk } from "../../store/account/accountThunks";
+import { useEffect } from "react";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import { AccountInterface } from "../../interfaces/accountInterface";
+import FilterAccount from "../../components/FilterAccount/FilterAccount";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -50,30 +57,15 @@ const columns = [
     dataIndex: "update",
     key: "update",
     sorter: false,
-    render: () => "Cập nhật",
+    render: (text: any, record: any) => (
+      <Link
+        to="/dashboard/manager-account/edit-account"
+        state={{ account: record }}
+      >
+        Cập nhật
+      </Link>
+    ),
   },
-];
-
-const data = [
-  {
-    key: "1",
-    username: "user1",
-    fullName: "Người dùng 1",
-    phoneNumber: "123456789",
-    email: "user1@example.com",
-    role: "Vai trò 1",
-    status: "Hoạt động",
-  },
-  {
-    key: "2",
-    username: "user2",
-    fullName: "Người dùng 2",
-    phoneNumber: "987654321",
-    email: "user2@example.com",
-    role: "Vai trò 2",
-    status: "Ngừng hoạt động",
-  },
-  // Add more data items here
 ];
 
 const pagination = {
@@ -81,55 +73,55 @@ const pagination = {
 };
 
 function ManagerAccount() {
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filteredData, setFilteredData] = useState<AccountInterface[]>([]);
+  const dispatch = useDispatch();
+  const accountData = useSelector((state: RootState) => state.account.accounts);
+  const roleData = useSelector((state: RootState) => state.role.roles);
+
+  useEffect(() => {
+    dispatch(fetchAccountsThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+
+  const handleSearch = (value: any) => {
+    setSearchKeyword(value);
+  };
+
+  useEffect(() => {
+    const filteredAccounts = accountData.filter((account) => {
+      return (
+        account.username.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        account.fullName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        account.phoneNumber
+          .toLowerCase()
+          .includes(searchKeyword.toLowerCase()) ||
+        account.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        account.role.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        account.status.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    });
+
+    if (searchKeyword == "all") {
+      setFilteredData(accountData);
+    } else {
+      setFilteredData(filteredAccounts);
+    }
+
+    setFilteredData(filteredAccounts);
+  }, [accountData, searchKeyword]);
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-            marginTop: "100px",
-          }}
-        >
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Tên vai trò:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="active">Hoạt động</Option>
-              <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Từ khóa:</span>
-            <Input
-              style={{ width: "200px" }}
-              prefix={
-                <SearchOutlined
-                  style={{ color: "#FF7506", marginLeft: "auto" }}
-                />
-              }
-            />
-          </div>
-        </div>
+        <FilterAccount handleSearch={handleSearch} roleData={roleData} />
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}
@@ -166,7 +158,10 @@ function ManagerAccount() {
           <span
             style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}
           >
-            <Link to="/dashboard/add-account">
+            <Link
+              to="/dashboard/manager-account/add-account"
+              style={{ color: "#FF7506" }}
+            >
               Thêm
               <br /> tài khoản
             </Link>

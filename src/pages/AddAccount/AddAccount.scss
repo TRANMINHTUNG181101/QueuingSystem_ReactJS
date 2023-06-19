@@ -5,6 +5,15 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    .group-btn {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     h3 {
         text-align: left;
         margin-bottom: 30px;
@@ -31,12 +40,4 @@
             }
         }
     }
-}
-.group-btn {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }

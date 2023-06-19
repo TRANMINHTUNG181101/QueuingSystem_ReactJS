@@ -1,9 +1,9 @@
 export interface ServiceInterface {
-  serviceId: string;
-  serviceName: string;
+  autoIncreaseFrom: string | null;
+  autoIncreaseTo: string | null;
   description: string;
-  numberingRule: "Increase" | "Decrease" | "Prefix";
-  prefix?: string;
-  startNumber?: number;
-  endNumber?: number;
+  prefix: string | null;
+  serviceCode: string;
+  serviceName: string;
+  suffix: string | null;
 }

@@ -1,16 +1,72 @@
 import "./LoginPage.css";
-import React, { useState } from "react";
-import { Form, Input, Button, Row, Col, Typography, Space } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Space,
+  message,
+  Alert,
+} from "antd";
 import ImageLogo from "../../assets/Group.png";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/auth/authThunks";
+import { AnyAction } from "redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { checkEmail } from "../../firebase/auth/checkEmail";
+import { forgotPasswordAccount } from "../../firebase/auth/forgot";
 
 const { Text } = Typography;
 
 function LoginPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [forgotPassword, setForgotPassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [loginError, setLoginError] = useState(false);
+  const [email, setEmail] = useState("");
+  const authData = useSelector((state: RootState) => state.auth.user);
 
-  const onFinish = (values: any) => {
-    console.log("Received values:", values);
+  const onFinish = async (values: any) => {
+    dispatch(
+      loginUser(values.username, values.password) as unknown as AnyAction
+    )
+      .then(() => {
+        if (authData) {
+          navigate("/dashboard");
+          console.log("Đăng nhập thành công");
+        } else {
+          console.log(loginError);
+          setLoginError(true);
+        }
+      })
+      .catch(() => {
+        console.log("Đăng nhập thất bại");
+      });
+  };
+
+  const handleCheckEmail = async (values: any) => {
+    const email = values.email;
+    try {
+      const isValid = await checkEmail(email);
+      console.log(isValid);
+      setIsEmailValid(isValid);
+      setEmail(email);
+
+      if (isValid) {
+        setResetPassword(true);
+      } else {
+        message.error("Email không hợp lệ");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -21,17 +77,32 @@ function LoginPage() {
     setForgotPassword(false);
     setResetPassword(false);
   };
+  let isUpdating = false;
+  const handleConfirmResetPassword = async (values: any) => {
+    if (values.newPassword !== values.confirmNewPassword) {
+      console.log("Mật khẩu không khớp!");
+      return;
+    }
 
-  const handleResetPassword = () => {
-    setResetPassword(true);
+    try {
+      isUpdating = true;
+      await forgotPasswordAccount(email, values.newPassword);
+      console.log("Cập nhật mật khẩu thành công!");
+    } catch (error) {
+      console.log("Cập nhật mật khẩu thất bại:", error);
+    } finally {
+      isUpdating = false;
+    }
   };
 
-  const handleConfirmResetPassword = () => {
-    // Perform password reset confirmation logic here
-  };
+  useEffect(() => {
+    if (authData) {
+      navigate("/dashboard");
+    }
+  }, [authData, navigate]);
 
   return (
-    <div className="login-page">
+    <div className={`login-page ${forgotPassword ? "forgot-password" : ""}`}>
       <Row style={{ height: "100vh" }}>
         <Col span={10}>
           <div
@@ -49,11 +120,14 @@ function LoginPage() {
               resetPassword ? (
                 <Form
                   name="resetPasswordForm"
-                  onFinish={onFinish}
+                  onFinish={handleConfirmResetPassword}
                   style={{ width: 300 }}
                 >
                   <Form.Item
+                    label="Mật khẩu"
                     name="newPassword"
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
                     rules={[
                       {
                         required: true,
@@ -64,7 +138,10 @@ function LoginPage() {
                     <Input.Password placeholder="New Password" />
                   </Form.Item>
                   <Form.Item
+                    label="Nhập lại mật khẩu"
                     name="confirmNewPassword"
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
                     rules={[
                       {
                         required: true,
@@ -87,22 +164,23 @@ function LoginPage() {
                   >
                     <Input.Password placeholder="Confirm New Password" />
                   </Form.Item>
+
                   <Space>
                     <Button
                       onClick={handleCancelForgotPassword}
                       style={{ marginLeft: "10px" }}
                     >
-                      Cancel
+                      Hủy
                     </Button>
-                    <Button type="primary" onClick={handleConfirmResetPassword}>
-                      Confirm
+                    <Button type="primary" htmlType="submit">
+                      Xác nhận
                     </Button>
                   </Space>
                 </Form>
               ) : (
                 <Form
                   name="forgotPasswordForm"
-                  onFinish={onFinish}
+                  onFinish={handleCheckEmail}
                   style={{ width: 300 }}
                 >
                   <Form.Item
@@ -119,10 +197,10 @@ function LoginPage() {
                       onClick={handleCancelForgotPassword}
                       style={{ marginLeft: "10px" }}
                     >
-                      Cancel
+                      Hủy
                     </Button>
-                    <Button type="primary" onClick={handleResetPassword}>
-                      Reset Password
+                    <Button type="primary" htmlType="submit">
+                      Tiếp tục
                     </Button>
                   </Space>
                 </Form>
@@ -135,7 +213,7 @@ function LoginPage() {
                 style={{ width: 300 }}
               >
                 <Form.Item
-                  label="Username"
+                  label="Tên đăng nhập"
                   name="username"
                   rules={[
                     { required: true, message: "Please input your username!" },
@@ -146,7 +224,7 @@ function LoginPage() {
                   <Input placeholder="Username" />
                 </Form.Item>
                 <Form.Item
-                  label="Password"
+                  label="Mật khẩu"
                   name="password"
                   rules={[
                     { required: true, message: "Please input your password!" },
@@ -156,19 +234,29 @@ function LoginPage() {
                 >
                   <Input.Password placeholder="Password" />
                 </Form.Item>
-
-                <Form.Item style={{ textAlign: "left" }}>
+                {loginError && (
+                  <div className="login-error">
+                    <Alert
+                      message="Sai mật khẩu hoặc tên đăng nhập"
+                      type="error"
+                      showIcon
+                      closable
+                    />
+                  </div>
+                )}
+                <Form.Item style={{ textAlign: "left", cursor: "pointer" }}>
                   <Text type="secondary" onClick={handleForgotPassword}>
                     Quên mật khẩu?
                   </Text>
                 </Form.Item>
+
                 <Form.Item>
                   <Button
                     type="primary"
                     htmlType="submit"
                     style={{ width: "100%" }}
                   >
-                    Log in
+                    Đăng nhập
                   </Button>
                 </Form.Item>
               </Form>
@@ -177,8 +265,14 @@ function LoginPage() {
         </Col>
         <Col span={14}>
           <div className="login-banner">
-            <span>Hệ thống</span>
-            <h1>QUẢN LÍ XẾP HÀNG</h1>
+            {forgotPassword ? (
+              ""
+            ) : (
+              <>
+                <span>Hệ thống</span>
+                <h1>QUẢN LÍ XẾP HÀNG</h1>
+              </>
+            )}
           </div>
         </Col>
       </Row>

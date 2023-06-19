@@ -3,6 +3,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    .group-btn {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     &__content {
         width: 90%;
         padding: 30px;
@@ -27,12 +36,4 @@
         width: 200px;
         text-align: left;
     }
-}
-.group-btn {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }

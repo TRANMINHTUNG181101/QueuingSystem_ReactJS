@@ -21,9 +21,8 @@ export const creatRole =
     idRole: string,
     roleName: string,
     description: string,
-    permissions: {
-      [functionGroup: string]: string[];
-    }
+    groupA: string[],
+    groupB: string[]
   ): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch: any) => {
     try {
@@ -32,7 +31,8 @@ export const creatRole =
         idRole,
         roleName,
         description,
-        permissions,
+        groupA,
+        groupB,
       });
       dispatch(sendRoleSuccess());
     } catch (error) {
@@ -45,17 +45,18 @@ export const updateRoleThunk =
     idRole: string,
     roleName: string,
     description: string,
-    permissions: {
-      [functionGroup: string]: string[];
-    }
+    groupA: string[],
+    groupB: string[]
   ): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch: any) => {
     try {
       dispatch(updateRoleStart());
-      await updateRole(idRole, {
+      await updateRole("idRole", idRole, {
+        idRole,
         roleName,
         description,
-        permissions,
+        groupA,
+        groupB,
       });
       dispatch(updateRoleSuccess());
     } catch (error) {

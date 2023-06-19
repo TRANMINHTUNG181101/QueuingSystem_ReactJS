@@ -1,21 +1,94 @@
 import "./EditDevice.css";
 import { Form, Input, Select, Row, Col, Button } from "antd";
 const { Option } = Select;
+import { useLocation, useNavigate } from "react-router-dom";
+import { DeviceInterface } from "../../interfaces/deviceInterface";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateDeviceThunk } from "../../store/device/deviceThunks";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import moment from "moment";
+import { getIP } from "../../utils/getIP";
+import { createHistoryThunk } from "../../store/history/historyThunks";
 
 function EditDevice() {
-  const onFinish = (values: any) => {
-    console.log("Form submitted:", values);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { device }: { device: DeviceInterface } = location.state;
+  const serviceData = useSelector((state: RootState) => state.service.services);
+  const authData = useSelector((state: RootState) => state.auth.user);
+  const onFinish = async (values: any) => {
+    console.log(
+      values.deviceId,
+      values.deviceName,
+      values.deviceType,
+      values.username,
+      values.ipAddress,
+      values.password,
+      values.services
+    );
+    dispatch(
+      updateDeviceThunk(
+        values.deviceId,
+        values.deviceName,
+        values.deviceType,
+        values.username,
+        values.ipAddress,
+        values.password,
+        values.services
+      ) as unknown as AnyAction
+    )
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+
+    const time = moment().format("HH:mm DD/MM/YYYY");
+    const desc = `Cập nhật thiết bị ${values.deviceName}`;
+    try {
+      const ip = await getIP();
+      console.log(ip);
+      dispatch(
+        createHistoryThunk(
+          authData?.username || "",
+          time,
+          ip,
+          desc
+        ) as unknown as AnyAction
+      );
+    } catch (error) {
+      console.log("Lỗi khi lấy địa chỉ IP:", error);
+    }
+  };
+  const handleCancel = () => {
+    navigate("/dashboard/device");
   };
   return (
     <div className="edit-device-page">
       <div className="edit-device-page__content">
         <h3>Thông tin thiết bị</h3>
-        <Form onFinish={onFinish} layout="vertical">
+        <Form
+          onFinish={onFinish}
+          layout="vertical"
+          initialValues={{
+            deviceId: device.deviceId,
+            deviceName: device.deviceName,
+            ipAddress: device.ipAddress,
+            deviceType: device.deviceType,
+            username: device.username,
+            password: device.password,
+            services: device.services,
+          }}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label="Mã thiết bị"
-                name="deviceCode"
+                name="deviceId"
                 rules={[
                   { required: true, message: "Vui lòng nhập mã thiết bị" },
                 ]}
@@ -50,9 +123,8 @@ function EditDevice() {
                 ]}
               >
                 <Select placeholder="Chọn loại thiết bị">
-                  <Option value="type1">Loại 1</Option>
-                  <Option value="type2">Loại 2</Option>
-                  <Option value="type3">Loại 3</Option>
+                  <Option value="Kiosk">Kiosk</Option>
+                  <Option value="Display counter">Display counter</Option>
                 </Select>
               </Form.Item>
               <Form.Item
@@ -86,17 +158,21 @@ function EditDevice() {
                 ]}
               >
                 <Select mode="multiple" placeholder="Chọn dịch vụ sử dụng">
-                  <Option>Dịch vụ 1</Option>
-                  <Option value="service2">Dịch vụ 2</Option>
-                  <Option value="service3">Dịch vụ 3</Option>
+                  {serviceData?.map((service) => (
+                    <Option key={service.serviceName}>
+                      {service.serviceName}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
           <div className="group-btn">
-            <Button type="default">Hủy bỏ</Button>
+            <Button type="default" onClick={handleCancel}>
+              Hủy bỏ
+            </Button>
             <Button type="primary" htmlType="submit">
-              Thêm thiết bị
+              Cập nhật thiết bị
             </Button>
           </div>
         </Form>

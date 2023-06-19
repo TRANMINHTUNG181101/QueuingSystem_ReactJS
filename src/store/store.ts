@@ -1,10 +1,26 @@
-import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/toolkit';
-import accountSlice from './account/accountSlice';
-import persistConfig from './persistConfig';
-import { persistStore } from 'redux-persist';
+import {
+  configureStore,
+  combineReducers,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
+import accountSlice from "./account/accountSlice";
+import deviceSlice from "./device/deviceSlice";
+import serviceSlice from "./service/serviceSlice";
+import roleSlice from "./role/roleSlice";
+import numberSlice from "./number/numberSlice";
+import persistConfig from "./persistConfig";
+import authSlice from "./auth/authSlice";
+import historySlice from "./history/historySlice";
+import { persistStore } from "redux-persist";
 
 const rootReducer = combineReducers({
-  account : accountSlice
+  account: accountSlice,
+  device: deviceSlice,
+  service: serviceSlice,
+  role: roleSlice,
+  auth: authSlice,
+  number: numberSlice,
+  history: historySlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -16,7 +32,7 @@ const store = configureStore({
   }),
 });
 
-const persistor = persistStore(store); 
+const persistor = persistStore(store);
 
 export { store, persistor };
 

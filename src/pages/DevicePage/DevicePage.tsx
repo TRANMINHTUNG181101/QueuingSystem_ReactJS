@@ -6,14 +6,29 @@ import { Select, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDeviceThunk } from "../../store/device/deviceThunks";
+import { useEffect, useState } from "react";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import FilterDevice from "../../components/FilterDevice/FilterDevice";
 
 const { Option } = Select;
+
+interface DataItem {
+  deviceId: string;
+  deviceName: number;
+  ipAddress: string;
+  activityStatus: string;
+  connectionStatus: string;
+  services: string;
+}
 
 const columns = [
   {
     title: "Mã thiết bị",
-    dataIndex: "deviceCode",
-    key: "deviceCode",
+    dataIndex: "deviceId",
+    key: "deviceId",
   },
   {
     title: "Tên thiết bị",
@@ -27,124 +42,39 @@ const columns = [
   },
   {
     title: "Trạng thái hoạt động",
-    dataIndex: "activityStatus",
-    key: "activityStatus",
+    dataIndex: "stateActive",
+    key: "stateActive",
   },
   {
     title: "Trạng thái kết nối",
-    dataIndex: "connectionStatus",
-    key: "connectionStatus",
+    dataIndex: "stateConnect",
+    key: "stateConnect",
   },
   {
     title: "Dịch vụ sử dụng",
-    dataIndex: "serviceUsed",
-    key: "serviceUsed",
+    dataIndex: "services",
+    key: "services",
+    render: (services: string[]) => <span>{services.join(", ")}</span>,
   },
   {
     title: " ",
     dataIndex: "detail",
     key: "detail",
-    render: () => <Link to="/dashboard/device-details">Chi tiết</Link>,
+    render: (text: any, record: any) => (
+      <Link to="/dashboard/device/device-details" state={{ device: record }}>
+        Chi tiết
+      </Link>
+    ),
   },
   {
     title: " ",
     dataIndex: "update",
     key: "update",
-    render: () => <Link to="/dashboard/edit-device">Cập nhật</Link>,
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
-  },
-  {
-    key: "1",
-    deviceCode: "DEV001",
-    deviceName: "Thiết bị 1",
-    ipAddress: "192.168.0.1",
-    activityStatus: "Hoạt động",
-    connectionStatus: "Đã kết nối",
-    serviceUsed: "Dịch vụ A",
+    render: (text: any, record: any) => (
+      <Link to="/dashboard/device/edit-device" state={{ device: record }}>
+        Cập nhật
+      </Link>
+    ),
   },
 ];
 
@@ -153,70 +83,66 @@ const pagination = {
 };
 
 function DevicePage() {
+  const [activeStatus, setActiveStatus] = useState<string | undefined>(
+    undefined
+  );
+  const [connectStatus, setConnectStatus] = useState<string | undefined>(
+    undefined
+  );
+  const [keyword, setKeyword] = useState<string | undefined>(undefined);
+  const dispatch = useDispatch();
+  const deviceData = useSelector((state: RootState) => state.device.devices);
+
+  useEffect(() => {
+    dispatch(fetchDeviceThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+
+  const filteredData = deviceData.filter((item: any) => {
+    const isStatusActiveMatched =
+      !activeStatus || item.stateActive === activeStatus;
+    const isStatusConnectMatched =
+      !connectStatus || item.stateConnect === connectStatus;
+    const isKeywordMatched =
+      !keyword ||
+      item.deviceId.includes(keyword) ||
+      item.deviceName.toString().includes(keyword) ||
+      item.ipAddress.includes(keyword) ||
+      item.services.includes(keyword);
+
+    return isStatusActiveMatched && isStatusConnectMatched && isKeywordMatched;
+  });
+  const handleActiveStatusChange = (value: string) => {
+    setActiveStatus(value);
+  };
+
+  const handleConnectStatusChange = (value: string) => {
+    setConnectStatus(value);
+  };
+
+  const handleKeywordChange = (value: string) => {
+    setKeyword(value);
+  };
+
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-            marginTop: "100px",
-          }}
-        >
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Trạng thái hoạt động:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="active">Hoạt động</Option>
-              <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Trạng thái kết nối:</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Từ khóa:</span>
-            <Input
-              style={{ width: "200px" }}
-              prefix={
-                <SearchOutlined
-                  style={{ color: "#FF7506", marginLeft: "auto" }}
-                />
-              }
-            />
-          </div>
-        </div>
+        <FilterDevice
+          activeStatus={activeStatus}
+          connectStatus={connectStatus}
+          keyword={keyword}
+          handleActiveStatusChange={handleActiveStatusChange}
+          handleConnectStatusChange={handleConnectStatusChange}
+          handleKeywordChange={handleKeywordChange}
+        />
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}
@@ -252,7 +178,7 @@ function DevicePage() {
         }}
       >
         <span style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}>
-          <Link to="/dashboard/add-device">
+          <Link to="add-device" style={{ color: "#FF7506" }}>
             Thêm
             <br /> thiết bị
           </Link>

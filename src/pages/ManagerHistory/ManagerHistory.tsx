@@ -1,18 +1,16 @@
-import React from "react";
+import { useState } from "react";
 import { Layout, Input, Select, Table, DatePicker } from "antd";
 import "./ManagerHistory.css";
 import { SearchOutlined } from "@ant-design/icons";
+import { fetchHistoryThunk } from "../../store/history/historyThunks";
+import { useEffect } from "react";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import moment, { Moment } from "moment";
 
 const { Content } = Layout;
-const { Option } = Select;
-
-interface DataItem {
-  key: string;
-  username: string;
-  actionTime: string;
-  ipAddress: string;
-  action: string;
-}
 
 const columns = [
   {
@@ -23,8 +21,8 @@ const columns = [
   },
   {
     title: "Thời gian tác động",
-    dataIndex: "actionTime",
-    key: "actionTime",
+    dataIndex: "timestamp",
+    key: "timestamp",
     sorter: false,
   },
   {
@@ -41,42 +39,72 @@ const columns = [
   },
 ];
 
-const data: DataItem[] = [
-  {
-    key: "1",
-    username: "user1",
-    actionTime: "01/06/2023 10:00 AM",
-    ipAddress: "192.168.0.1",
-    action: "Thao tác 1",
-  },
-  {
-    key: "2",
-    username: "user2",
-    actionTime: "02/06/2023 11:30 AM",
-    ipAddress: "192.168.0.2",
-    action: "Thao tác 2",
-  },
-  {
-    key: "3",
-    username: "user3",
-    actionTime: "03/06/2023 02:45 PM",
-    ipAddress: "192.168.0.3",
-    action: "Thao tác 3",
-  },
-  {
-    key: "4",
-    username: "user4",
-    actionTime: "04/06/2023 09:15 AM",
-    ipAddress: "192.168.0.4",
-    action: "Thao tác 4",
-  },
-];
-
 const pagination = {
   pageSize: 7,
 };
 
 function ManagerHistory() {
+  const currentDate = moment();
+  const [startDate, setStartDate] = useState<Moment | null>(
+    moment().startOf("month")
+  );
+  const [endDate, setEndDate] = useState<Moment | null>(
+    moment().endOf("month")
+  );
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const dispatch = useDispatch();
+  const historyData = useSelector((state: RootState) => state.history.historys);
+  useEffect(() => {
+    dispatch(fetchHistoryThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+
+  const filteredData = historyData.filter((item) => {
+    const startDateObj = startDate?.format("DD-MM-YYYY");
+    const endDateObj = endDate?.format("DD-MM-YYYY");
+    const startTime = item.timestamp.split(" ")[1];
+    const startDateParse = moment(startDateObj, "D/M/YYYY");
+    const endDateParse = moment(endDateObj, "D/M/YYYY");
+    const dateToCheck = moment(startTime, "D/M/YYYY");
+
+    const isDateMatched =
+      !startDateParse ||
+      !endDateParse ||
+      (dateToCheck &&
+        moment(dateToCheck, "DD/MM/YYYY").isBetween(
+          startDateParse.startOf("day"),
+          endDateParse.endOf("day"),
+          undefined,
+          "[]"
+        ));
+
+    const isKeywordMatched =
+      !searchKeyword ||
+      item.username.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      item.ipAddress.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      item.action.toLowerCase().includes(searchKeyword.toLowerCase());
+
+    return isDateMatched && isKeywordMatched;
+  });
+
+  const handleSearchKeywordChange = (e: any) => {
+    setSearchKeyword(e.target.value);
+  };
+  const handleStartDateChange = (value: any) => {
+    setStartDate(value);
+  };
+
+  const handleEndDateChange = (value: any) => {
+    setEndDate(value);
+  };
+
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
@@ -98,7 +126,7 @@ function ManagerHistory() {
             }}
           >
             <span>Trạng thái hoạt động:</span>
-            <DatePicker />
+            <DatePicker onChange={handleStartDateChange} />
           </div>
           <div
             style={{
@@ -106,7 +134,7 @@ function ManagerHistory() {
               marginTop: "25px",
             }}
           >
-            <DatePicker />
+            <DatePicker onChange={handleEndDateChange} />
           </div>
           <div
             style={{
@@ -125,12 +153,14 @@ function ManagerHistory() {
                   style={{ color: "#FF7506", marginLeft: "auto" }}
                 />
               }
+              value={searchKeyword}
+              onChange={handleSearchKeywordChange}
             />
           </div>
         </div>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}

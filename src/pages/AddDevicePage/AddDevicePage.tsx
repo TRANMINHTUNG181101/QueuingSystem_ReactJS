@@ -1,15 +1,83 @@
 import "./AddDevicePage.css";
-import { Form, Input, Select, Row, Col, Button } from "antd";
+import React, { useEffect, useRef } from "react";
+import { Form, Input, Select, Row, Col, Button, message } from "antd";
 const { Option } = Select;
+import { useDispatch, useSelector } from "react-redux";
+import { sendDevice } from "../../store/device/deviceThunks";
+import { AnyAction } from "redux";
+import { RootState } from "../../store/store";
+import { FormInstance } from "antd";
+import { fetchServiceThunk } from "../../store/service/serviceThunks";
+import moment from "moment";
+import { getIP } from "../../utils/getIP";
+import { createHistoryThunk } from "../../store/history/historyThunks";
+import { useNavigate } from "react-router-dom";
+
 function AddDevicePage() {
-  const onFinish = (values: any) => {
-    console.log("Form submitted:", values);
+  const formRef = useRef<FormInstance>(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const authData = useSelector((state: RootState) => state.auth.user);
+  const onFinish = async (values: any) => {
+    let stateActive = "Ngưng hoạt động";
+    let stateConnect = "Mất kết nối";
+    dispatch(
+      sendDevice(
+        values.deviceCode,
+        values.deviceName,
+        values.deviceType,
+        values.username,
+        values.ipAddress,
+        values.password,
+        stateActive,
+        stateConnect,
+        values.services
+      ) as unknown as AnyAction
+    )
+      .then(() => {
+        message.success("Thêm thiết bị thành công");
+        formRef.current?.resetFields();
+      })
+      .catch(() => {
+        message.error("Thêm thiết bị thất bại");
+      });
+    const time = moment().format("HH:mm DD/MM/YYYY");
+    const desc = `Thêm thiết bị ${values.deviceName}`;
+    try {
+      const ip = await getIP();
+      console.log(ip);
+      dispatch(
+        createHistoryThunk(
+          authData?.username || "",
+          time,
+          ip,
+          desc
+        ) as unknown as AnyAction
+      );
+    } catch (error) {
+      console.log("Lỗi khi lấy địa chỉ IP:", error);
+    }
+  };
+  const serviceData = useSelector((state: RootState) => state.service.services);
+
+  useEffect(() => {
+    dispatch(fetchServiceThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+
+  const handleCancel = () => {
+    navigate("/dashboard/device");
   };
   return (
     <div className="add-device-page">
       <div className="add-device-page__content">
         <h3>Thông tin thiết bị</h3>
-        <Form onFinish={onFinish} layout="vertical">
+        <Form ref={formRef} onFinish={onFinish} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -49,9 +117,8 @@ function AddDevicePage() {
                 ]}
               >
                 <Select placeholder="Chọn loại thiết bị">
-                  <Option value="type1">Loại 1</Option>
-                  <Option value="type2">Loại 2</Option>
-                  <Option value="type3">Loại 3</Option>
+                  <Option value="Kiosk">Kiosk</Option>
+                  <Option value="Display counter">Display counter</Option>
                 </Select>
               </Form.Item>
               <Form.Item
@@ -82,15 +149,19 @@ function AddDevicePage() {
                 ]}
               >
                 <Select mode="multiple" placeholder="Chọn dịch vụ sử dụng">
-                  <Option>Dịch vụ 1</Option>
-                  <Option value="service2">Dịch vụ 2</Option>
-                  <Option value="service3">Dịch vụ 3</Option>
+                  {serviceData?.map((service) => (
+                    <Option key={service.serviceName}>
+                      {service.serviceName}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
           <div className="group-btn">
-            <Button type="default">Hủy bỏ</Button>
+            <Button type="default" onClick={handleCancel}>
+              Hủy bỏ
+            </Button>
             <Button type="primary" htmlType="submit">
               Thêm thiết bị
             </Button>

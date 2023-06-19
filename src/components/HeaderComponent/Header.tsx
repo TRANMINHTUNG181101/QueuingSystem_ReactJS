@@ -2,54 +2,56 @@ import React from "react";
 import { Layout, Breadcrumb, Avatar, Dropdown, Menu, Badge } from "antd";
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import ImageAvatar from "../../assets/avatar.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
+import { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+const { Header } = Layout;
+import breadcrumbVi from "../../breadcrumbVi.json";
 
-const { Header, Content } = Layout;
-
-const notificationData = [
-  {
-    id: 1,
-    title: "Thông báo 1",
-    description: "Đây là thông báo số 1",
-  },
-  {
-    id: 2,
-    title: "Thông báo 2",
-    description: "Đây là thông báo số 2",
-  },
-  {
-    id: 3,
-    title: "Thông báo 3",
-    description: "Đây là thông báo số 3",
-  },
-];
-
-const menu = (
-  <Menu>
-    {notificationData.map((item) => (
-      <Menu.Item key={item.id}>
-        <strong>{item.title}</strong>
-        <div>{item.description}</div>
-      </Menu.Item>
-    ))}
-  </Menu>
-);
-
-const breadcrumbItems = [
-  { title: "Home", link: "/" },
-  { title: "Products", link: "/products" },
-  { title: "Category", link: "/products/category" },
-  { title: "Current Page", link: "" },
-];
+interface BreadcrumbTranslations {
+  [key: string]: string;
+}
 
 function HeaderComponent() {
+  const auth = useSelector((state: RootState) => state.auth.user);
+  const numberData = useSelector((state: RootState) => state.number.numbers);
+  const location = useLocation();
+  const breadcrumbItems = location.pathname
+    .split("/")
+    .filter((item) => item !== "")
+    .map((item, index, arr) => ({
+      title: (breadcrumbVi as BreadcrumbTranslations)[item] || item,
+      link: `/${arr.slice(0, index + 1).join("/")}`,
+    }));
+
+  const notificationData = numberData
+    ? numberData.slice(0, 6).map((number) => ({
+        id: number.idNumber,
+        title: `Người dùng: ${number.customerName}`,
+        description: `Thời gian nhận số: ${number.issuanceDate}`,
+      }))
+    : [];
+
+  const menu = (
+    <Menu>
+      {notificationData.map((item) => (
+        <Menu.Item key={item.id}>
+          <strong style={{ color: "#FF7506", fontWeight: "600" }}>
+            {item.title}
+          </strong>
+          <div>{item.description}</div>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   return (
     <Header className="header">
       <Breadcrumb className="breadcrumb" separator=">">
         {breadcrumbItems.map((item, index) => (
           <Breadcrumb.Item key={index}>
-            {item.link ? <a href={item.link}>{item.title}</a> : item.title}
+            {item.link ? <Link to={item.link}>{item.title}</Link> : item.title}
           </Breadcrumb.Item>
         ))}
       </Breadcrumb>
@@ -63,7 +65,7 @@ function HeaderComponent() {
         <span>Xin chào</span>
         <span className="username">
           <Link to="/dashboard/info" style={{ color: "#000000" }}>
-            Lê Quỳnh Ái Vân
+            {auth?.fullName}
           </Link>
         </span>
       </div>

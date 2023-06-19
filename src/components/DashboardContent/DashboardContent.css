@@ -1,1 +1,23 @@
-/*# sourceMappingURL=DashboardContent.css.map */
+.chart-section canvas {
+  width: 100% !important;
+}
+
+.chart-section__filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chart-section__filter__title {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.chart-section__filter__title h3 {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.chart-section__filter__title span {
+  color: gray;
+  text-align: left;
+}/*# sourceMappingURL=DashboardContent.css.map */

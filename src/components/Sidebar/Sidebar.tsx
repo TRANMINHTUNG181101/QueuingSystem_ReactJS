@@ -10,14 +10,21 @@ import {
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-const { Content } = Layout;
-import { LineChartOutlined, PieChartOutlined } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
+import { logout } from "../../store/auth/authThunks";
+import { AnyAction } from "redux";
 
 function Sidebar() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout() as unknown as AnyAction);
+    navigate("/");
+  };
 
   const getMenuKey = () => {
     const path = location.pathname;
@@ -100,7 +107,7 @@ function Sidebar() {
           </SubMenu>
         </Menu>
       </Menu>
-      <div className="logout">
+      <div className="logout" onClick={handleLogout}>
         <LogoutOutlined className="logout-icon" />
         <span>Đăng xuất</span>
       </div>

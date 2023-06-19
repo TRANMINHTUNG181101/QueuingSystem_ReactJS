@@ -1,8 +1,7 @@
 export interface RoleInterface {
-  idRole : String;
+  idRole: String;
   roleName: string;
   description: string;
-  permissions: {
-    [functionGroup: string]: string[];
-  };
+  groupA: string[];
+  groupB: string[];
 }

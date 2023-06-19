@@ -3,9 +3,16 @@ import "./TakeTheNumberPage.css";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { fetchNumberThunk } from "../../store/number/numberThunks";
+import { useEffect } from "react";
+import { AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import moment, { Moment } from "moment";
+import FilterNumbering from "../../components/FilterNumbering/FilterNumbering";
 
 const { Content } = Layout;
-const { Option } = Select;
 
 const columns = [
   {
@@ -25,8 +32,8 @@ const columns = [
   },
   {
     title: "Thời gian cấp",
-    dataIndex: "startTime",
-    key: "startTime",
+    dataIndex: "issuanceDate",
+    key: "issuanceDate",
   },
   {
     title: "Hạn sử dụng",
@@ -35,8 +42,8 @@ const columns = [
   },
   {
     title: "Trạng thái",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "state",
+    key: "state",
   },
   {
     title: "Nguồn cấp",
@@ -47,50 +54,14 @@ const columns = [
     title: " ",
     dataIndex: "detail",
     key: "detail",
-    render: () => <Link to="/dashboard/take-the-number-details">Chi tiết</Link>,
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    stt: "1",
-    customerName: "Khách hàng 1",
-    serviceName: "Dịch vụ 1",
-    startTime: "01/06/2023",
-    expirationDate: "01/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 1",
-  },
-  {
-    key: "2",
-    stt: "2",
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
-  },
-  {
-    key: "2",
-    stt: "2",
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
-  },
-  {
-    key: "2",
-    stt: "2",
-    customerName: "Khách hàng 2",
-    serviceName: "Dịch vụ 2",
-    startTime: "02/06/2023",
-    expirationDate: "02/07/2023",
-    status: "Hoạt động",
-    source: "Nguồn 2",
+    render: (text: any, record: any) => (
+      <Link
+        to="/dashboard/take-the-number/take-the-number-details"
+        state={{ number: record }}
+      >
+        Chi tiết
+      </Link>
+    ),
   },
 ];
 
@@ -99,105 +70,116 @@ const pagination = {
 };
 
 function TakeTheNumberPage() {
+  const dispatch = useDispatch();
+  const numberData = useSelector((state: RootState) => state.number.numbers);
+  const serviceData = useSelector((state: RootState) => state.service.services);
+  const [selectedService, setSelectedService] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedSource, setSelectedSource] = useState("all");
+  const [startDate, setStartDate] = useState<Moment | null>(
+    moment().startOf("month")
+  );
+  const [endDate, setEndDate] = useState<Moment | null>(
+    moment().endOf("month")
+  );
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchNumberThunk() as unknown as AnyAction)
+      .then(() => {
+        console.log("Gửi thành công");
+      })
+      .catch(() => {
+        console.log("Lỗi");
+      });
+  }, []);
+  const modifiedNumberData = numberData.map((item, index) => ({
+    ...item,
+    stt: index + 1,
+  }));
+
+  const handleServiceChange = (value: any) => {
+    setSelectedService(value);
+  };
+
+  const handleStatusChange = (value: any) => {
+    setSelectedStatus(value);
+  };
+
+  const handleSourceChange = (value: any) => {
+    setSelectedSource(value);
+  };
+
+  const handleStartDateChange = (value: any) => {
+    setStartDate(value);
+  };
+
+  const handleEndDateChange = (value: any) => {
+    setEndDate(value);
+  };
+
+  const handleSearchKeywordChange = (e: any) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const filteredData = modifiedNumberData.filter((item) => {
+    const isServiceMatched =
+      selectedService === "all" || item.serviceName === selectedService;
+    const isStatusMatched =
+      selectedStatus === "all" || item.state === selectedStatus;
+    const isSourceMatched =
+      selectedSource === "all" || item.source === selectedSource;
+    const isKeywordMatched =
+      item.customerName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      item.serviceName.toLowerCase().includes(searchKeyword.toLowerCase());
+
+    const startDateObj = startDate?.format("DD-MM-YYYY");
+    const endDateObj = endDate?.format("DD-MM-YYYY");
+    const startTime = item.issuanceDate.split(" ")[1];
+    const startDateParse = moment(startDateObj, "D/M/YYYY");
+    const endDateParse = moment(endDateObj, "D/M/YYYY");
+    const dateToCheck = moment(startTime, "D/M/YYYY");
+
+    const isDateMatched =
+      !startDateParse ||
+      !endDateParse ||
+      (dateToCheck &&
+        moment(dateToCheck, "DD/MM/YYYY").isBetween(
+          startDateParse.startOf("day"),
+          endDateParse.endOf("day"),
+          undefined,
+          "[]"
+        ));
+
+    return (
+      isServiceMatched &&
+      isStatusMatched &&
+      isSourceMatched &&
+      isDateMatched &&
+      isKeywordMatched
+    );
+  });
+
   return (
     <Layout>
       <Content style={{ padding: "16px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-            marginTop: "100px",
-          }}
-        >
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Tên dịch vụ</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="active">Hoạt động</Option>
-              <Option value="inactive">Ngừng hoạt động</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Tình trạng</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Nguồn cấp</span>
-            <Select style={{ width: "200px" }}>
-              <Option value="connected">Đã kết nối</Option>
-              <Option value="disconnected">Chưa kết nối</Option>
-            </Select>
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Chọn thời gian</span>
-            <DatePicker />
-          </div>
-          <div
-            style={{
-              marginRight: "16px",
-              marginTop: "25px",
-            }}
-          >
-            <DatePicker />
-          </div>
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: "10px",
-            }}
-          >
-            <span>Từ khóa:</span>
-            <Input
-              style={{ width: "200px" }}
-              prefix={
-                <SearchOutlined
-                  style={{ color: "#FF7506", marginLeft: "auto" }}
-                />
-              }
-            />
-          </div>
-        </div>
+        <FilterNumbering
+          selectedService={selectedService}
+          selectedStatus={selectedStatus}
+          selectedSource={selectedSource}
+          startDate={startDate}
+          endDate={endDate}
+          searchKeyword={searchKeyword}
+          handleServiceChange={handleServiceChange}
+          handleStatusChange={handleStatusChange}
+          handleSourceChange={handleSourceChange}
+          handleStartDateChange={handleStartDateChange}
+          handleEndDateChange={handleEndDateChange}
+          handleSearchKeywordChange={handleSearchKeywordChange}
+        />
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           bordered
           style={{ width: "100%" }}
           pagination={pagination}
@@ -233,7 +215,10 @@ function TakeTheNumberPage() {
         }}
       >
         <span style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}>
-          <Link to="/dashboard/add-take-the-number">
+          <Link
+            to="/dashboard/take-the-number/add-take-the-number"
+            style={{ color: "#FF7506" }}
+          >
             Cấp <br />
             số mới
           </Link>
