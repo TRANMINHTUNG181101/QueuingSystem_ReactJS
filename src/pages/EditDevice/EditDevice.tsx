@@ -1,18 +1,20 @@
 import "./EditDevice.css";
-import { Form, Input, Select, Row, Col, Button } from "antd";
+import { Form, Input, Select, Row, Col, Button, message } from "antd";
 const { Option } = Select;
 import { useLocation, useNavigate } from "react-router-dom";
 import { DeviceInterface } from "../../interfaces/deviceInterface";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDeviceThunk } from "../../store/device/deviceThunks";
 import { AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store/store";
+import { FormInstance } from "antd";
 import moment from "moment";
 import { getIP } from "../../utils/getIP";
 import { createHistoryThunk } from "../../store/history/historyThunks";
 
 function EditDevice() {
+  const formRef = useRef<FormInstance>(null);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,11 +42,13 @@ function EditDevice() {
         values.services
       ) as unknown as AnyAction
     )
+    
       .then(() => {
-        console.log("Gửi thành công");
+        message.success("Cập nhật thiết bị thành công");
+        formRef.current?.resetFields();
       })
       .catch(() => {
-        console.log("Lỗi");
+        message.error("Cập nhật thiết bị thất bại");
       });
 
     const time = moment().format("HH:mm DD/MM/YYYY");
@@ -60,6 +64,7 @@ function EditDevice() {
           desc
         ) as unknown as AnyAction
       );
+      navigate("/dashboard/device");
     } catch (error) {
       console.log("Lỗi khi lấy địa chỉ IP:", error);
     }

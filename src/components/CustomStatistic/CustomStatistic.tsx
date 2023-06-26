@@ -85,14 +85,14 @@ const CustomStatistic: React.FC<CustomStatisticProps> = ({
           {value}
         </Typography.Text>
       </Col>
-      <Col>
+      <Col style={{ marginLeft: "auto" }}>
         <Typography.Text
           style={{
             background: "#E73F3F26",
             borderRadius: "10px",
             padding: "0px 10px",
             color: "#E73F3F",
-            marginLeft: "80px",
+            marginLeft: "auto",
           }}
           type={isIncreasing ? "success" : "danger"}
         >

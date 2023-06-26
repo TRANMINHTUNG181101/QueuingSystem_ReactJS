@@ -56,6 +56,7 @@ function EditAccount() {
           desc
         ) as unknown as AnyAction
       );
+      navigate("/dashboard/manager-account");
     } catch (error) {
       console.log("Lỗi khi lấy địa chỉ IP:", error);
     }

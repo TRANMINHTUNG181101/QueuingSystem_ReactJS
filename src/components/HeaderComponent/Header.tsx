@@ -26,7 +26,7 @@ function HeaderComponent() {
     }));
 
   const notificationData = numberData
-    ? numberData.slice(0, 6).map((number) => ({
+    ? numberData.slice(-6).map((number) => ({
         id: number.idNumber,
         title: `Người dùng: ${number.customerName}`,
         description: `Thời gian nhận số: ${number.issuanceDate}`,
@@ -57,7 +57,7 @@ function HeaderComponent() {
       </Breadcrumb>
       <Dropdown overlay={menu} trigger={["click"]} placement="bottomLeft">
         <Badge count={notificationData.length}>
-          <BellOutlined className="bell" />
+          <BellOutlined className="bell" style={{ cursor: "pointer" }} />
         </Badge>
       </Dropdown>
       <Avatar src={ImageAvatar} className="avatar" />

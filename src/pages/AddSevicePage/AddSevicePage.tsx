@@ -141,6 +141,7 @@ function AddSevicePage() {
                   <Form.Item name="autoIncreaseFrom">
                     <Input style={{ width: "60px" }} />
                   </Form.Item>
+                  <h4 style={{ marginBottom: "25px" }}>đến</h4>
                   <Form.Item name="autoIncreaseTo">
                     <Input style={{ width: "60px" }} />
                   </Form.Item>

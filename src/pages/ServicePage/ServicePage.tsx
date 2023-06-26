@@ -74,7 +74,7 @@ function ServicePage() {
         const isActive = numberData.some(
           (number) => number.serviceName === record.serviceName
         );
-        return isActive ? <span>Hoạt động</span> : <span>Ngừng hoạt động</span>;
+        return isActive ? <span>Hoạt động</span> : <span>Ngưng hoạt động</span>;
       },
     },
     {

@@ -75,7 +75,7 @@ function ReportPage() {
             const source = matchingDevice ? matchingDevice.deviceType : "";
 
             return {
-              stt: 1,
+              stt: 20011118,
               key: number.idNumber.toString(),
               customerName: number.customerName,
               serviceName: number.serviceName,

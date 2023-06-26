@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Select } from "antd";
+import { Input, Select, DatePicker } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Moment } from "moment";
 
@@ -45,6 +45,33 @@ const FilterService: React.FC<ServiceFilterProps> = ({
           <Option value="active">Hoạt động</Option>
           <Option value="inactive">Ngưng hoạt động</Option>
         </Select>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            marginRight: "16px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "10px",
+          }}
+        >
+          <span>Chọn thời gian:</span>
+          <DatePicker />
+        </div>
+        <div
+          style={{
+            marginRight: "16px",
+            marginTop: "25px",
+          }}
+        >
+          <DatePicker />
+        </div>
       </div>
       <div
         style={{

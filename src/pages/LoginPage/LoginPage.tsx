@@ -30,6 +30,7 @@ function LoginPage() {
   const [resetPassword, setResetPassword] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const authData = useSelector((state: RootState) => state.auth.user);
 
@@ -88,6 +89,8 @@ function LoginPage() {
       isUpdating = true;
       await forgotPasswordAccount(email, values.newPassword);
       console.log("Cập nhật mật khẩu thành công!");
+      setResetPasswordSuccess(true);
+      window.location.reload();
     } catch (error) {
       console.log("Cập nhật mật khẩu thất bại:", error);
     } finally {
@@ -213,7 +216,7 @@ function LoginPage() {
                 style={{ width: 300 }}
               >
                 <Form.Item
-                  label="Tên đăng nhập"
+                  label="Tài khoản"
                   name="username"
                   rules={[
                     { required: true, message: "Please input your username!" },

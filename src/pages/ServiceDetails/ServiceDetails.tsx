@@ -1,7 +1,16 @@
-import { Col, Input, Layout, Row, Select, DatePicker, Table } from "antd";
+import {
+  Col,
+  Input,
+  Layout,
+  Row,
+  Select,
+  DatePicker,
+  Table,
+  Button,
+} from "antd";
 import "./ServiceDetails.css";
-import { SearchOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
+import { SearchOutlined, EditOutlined, LeftOutlined } from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
 import { ServiceInterface } from "../../interfaces/serviceInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -10,6 +19,7 @@ import { NumberingInterface } from "../../interfaces/numberInterface";
 import { useDispatch } from "react-redux";
 import { fetchNumberThunk } from "../../store/number/numberThunks";
 import { AnyAction } from "redux";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -253,6 +263,98 @@ function ServiceDetails() {
           </Row>
         </Layout>
       </div>
+      <Button
+        icon={
+          <EditOutlined
+            style={{
+              width: "30px",
+              height: "30px",
+              backgroundColor: "#FF9138",
+              color: "#FFF2E7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "5px",
+              marginLeft: "10px",
+            }}
+          />
+        }
+        style={{
+          position: "absolute",
+          right: "0px",
+          top: "15%",
+          width: "60px",
+          height: "80px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "#FFF2E7 !important",
+        }}
+      >
+        <span
+          style={{
+            fontSize: "12px",
+            fontWeight: "700",
+            color: "#FF7506",
+          }}
+        >
+          <Link
+            to="/dashboard/service/edit-service"
+            style={{ color: "#FF7506" }}
+            state={{ service: service }}
+          >
+            Cập nhật
+            <br />
+            danh sách
+          </Link>
+        </span>
+      </Button>
+      <Button
+        icon={
+          <LeftOutlined
+            style={{
+              width: "30px",
+              height: "30px",
+              backgroundColor: "#FF9138",
+              color: "#FFF2E7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "5px",
+              marginLeft: "10px",
+            }}
+          />
+        }
+        style={{
+          position: "absolute",
+          right: "0px",
+          top: "26%",
+          width: "60px",
+          height: "80px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "#FFF2E7 !important",
+        }}
+      >
+        <span
+          style={{
+            fontSize: "12px",
+            fontWeight: "700",
+            color: "#FF7506",
+          }}
+        >
+          <Link 
+            to="/dashboard/service" 
+            style={{ color: "#FF7506" }}
+            state={{ service: service }}
+          >
+            Quay lại
+          </Link>
+        </span>
+      </Button>
     </div>
   );
 }

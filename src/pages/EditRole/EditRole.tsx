@@ -69,6 +69,7 @@ function EditRole() {
           desc
         ) as unknown as AnyAction
       );
+      navigate("/dashboard/manager-role");
     } catch (error) {
       console.log("Lỗi khi lấy địa chỉ IP:", error);
     }

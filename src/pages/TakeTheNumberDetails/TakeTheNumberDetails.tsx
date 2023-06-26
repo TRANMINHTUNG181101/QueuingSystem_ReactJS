@@ -99,7 +99,7 @@ function TakeTheNumberDetails() {
             marginTop: "5px",
           }}
         >
-          <Link to="/dashboard/edit-take-the-number">Quay lại</Link>
+          <Link to="/dashboard/take-the-number">Quay lại</Link>
         </span>
       </Button>
     </div>

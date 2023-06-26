@@ -1,7 +1,8 @@
-import { Form, Input, Row, Col, Button, Typography, Checkbox } from "antd";
+import { Form, Input, Row, Col, Button, Typography, Checkbox, message } from "antd";
 const { TextArea } = Input;
 const { Title } = Typography;
 import "./EditService.css";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ServiceInterface } from "../../interfaces/serviceInterface";
@@ -12,8 +13,10 @@ import { getIP } from "../../utils/getIP";
 import { createHistoryThunk } from "../../store/history/historyThunks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { FormInstance } from "antd";
 
 function EditService() {
+  const formRef = useRef<FormInstance>(null);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,11 +44,13 @@ function EditService() {
         values.suffix
       ) as unknown as AnyAction
     )
+      
       .then(() => {
-        console.log("Gửi thành công");
+        message.success("Cập nhật dịch vụ thành công");
+        formRef.current?.resetFields();
       })
       .catch(() => {
-        console.log("Lỗi");
+        message.error("Cập nhật dịch vụ thất bại");
       });
 
     const time = moment().format("HH:mm DD/MM/YYYY");
@@ -61,12 +66,13 @@ function EditService() {
           desc
         ) as unknown as AnyAction
       );
+      navigate("/dashboard/service");
     } catch (error) {
       console.log("Lỗi khi lấy địa chỉ IP:", error);
     }
   };
   const handleCancel = () => {
-    navigate("/dashboard/device");
+    navigate("/dashboard/service");
   };
   return (
     <div className="edit-service-page">
@@ -133,10 +139,11 @@ function EditService() {
                   </Form.Item>
                   <h3 style={{ marginBottom: "25px" }}>Tăng tự động từ</h3>
                   <Form.Item name="autoIncreaseFrom">
-                    <Input style={{ width: "40px" }} />
+                    <Input style={{ width: "55px" }} />
                   </Form.Item>
+                  <h4 style={{ marginBottom: "25px" }}>đến</h4>
                   <Form.Item name="autoIncreaseTo">
-                    <Input style={{ width: "40px" }} />
+                    <Input style={{ width: "55px" }} />
                   </Form.Item>
                 </div>
                 <div className="check__item">
@@ -145,7 +152,7 @@ function EditService() {
                   </Form.Item>
                   <h3 style={{ marginBottom: "25px" }}>Prefix:</h3>
                   <Form.Item name="prefix">
-                    <Input style={{ width: "40px" }} />
+                    <Input style={{ width: "55px" }} />
                   </Form.Item>
                 </div>
                 <div className="check__item">
@@ -154,7 +161,7 @@ function EditService() {
                   </Form.Item>
                   <h3 style={{ marginBottom: "25px" }}>Surfix:</h3>
                   <Form.Item name="suffix">
-                    <Input style={{ width: "40px" }} />
+                    <Input style={{ width: "55px" }} />
                   </Form.Item>
                 </div>
                 <h3 style={{ textAlign: "left" }}>Reset mỗi ngày</h3>

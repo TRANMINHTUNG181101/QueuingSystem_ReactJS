@@ -437,7 +437,7 @@ function DashboardContent() {
                         value={totalNumbers}
                         smallValue="+10"
                         isIncreasing={true}
-                        active={totalNumbers.toString()}
+                        active={activeNumbersCount.toString()}
                         inactive={expiredNumbersCount.toString()}
                         skip={cancelledNumbersCount.toString()}
                       />

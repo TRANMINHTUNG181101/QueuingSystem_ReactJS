@@ -60,7 +60,7 @@ function DeviceDetails() {
                 }}
               >
                 <h3>Dịch vụ sử dụng:</h3>
-                <span>{device.services}</span>
+                <span>{device.services.join(", ")}</span>
               </div>
             </Col>
           </Row>
@@ -96,9 +96,13 @@ function DeviceDetails() {
         }}
       >
         <span style={{ fontSize: "12px", fontWeight: "700", color: "#FF7506" }}>
-          <Link to="/dashboard/edit-device">
+          <Link 
+            to="/dashboard/device/edit-device"
+            state={{ device: device }}
+          >
             Cập nhật
-            <br /> thiết bị
+            <br /> 
+            thiết bị
           </Link>
         </span>
       </Button>
