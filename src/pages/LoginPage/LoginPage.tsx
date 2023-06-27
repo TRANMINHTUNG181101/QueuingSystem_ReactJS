@@ -30,6 +30,7 @@ function LoginPage() {
   const [resetPassword, setResetPassword] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [loginAcctive, setLoginAcctive] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const authData = useSelector((state: RootState) => state.auth.user);
@@ -39,9 +40,10 @@ function LoginPage() {
       loginUser(values.username, values.password) as unknown as AnyAction
     )
       .then(() => {
-        if (authData) {
+        if (authData && authData.status === "hoạt động") {
           navigate("/dashboard");
-          console.log("Đăng nhập thành công");
+        } else if (authData && authData.status !== "hoạt động") {
+          setLoginAcctive(true);
         } else {
           console.log(loginError);
           setLoginError(true);
@@ -99,7 +101,7 @@ function LoginPage() {
   };
 
   useEffect(() => {
-    if (authData) {
+    if (authData && authData.status === "hoạt động") {
       navigate("/dashboard");
     }
   }, [authData, navigate]);
@@ -241,6 +243,16 @@ function LoginPage() {
                   <div className="login-error">
                     <Alert
                       message="Sai mật khẩu hoặc tên đăng nhập"
+                      type="error"
+                      showIcon
+                      closable
+                    />
+                  </div>
+                )}
+                {loginAcctive && (
+                  <div className="login-error">
+                    <Alert
+                      message="Tài khoản đã ngừng hoạt động"
                       type="error"
                       showIcon
                       closable
